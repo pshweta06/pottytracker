@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌟 Dhwani's Potty Champion Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #ad1457;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #e91e8c;
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+      opacity: 0.7;
+    }
+
+    /* ── Login screen ── */
+    #login-screen { display: block; }
+    #app-screen    { display: none; }
+
+    .login-emoji {
+      font-size: 3.5rem;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #5d4037;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #f8bbd0;
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #333;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input[type="password"]:focus,
+    textarea:focus {
+      border-color: #e91e8c;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* ── Yes / No toggle buttons ── */
+    .toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .toggle-group input[type="radio"] {
+      display: none;
+    }
+
+    .toggle-group label {
+      flex: 1;
+      text-align: center;
+      padding: 11px;
+      border: 2px solid #f8bbd0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #ad1457;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .toggle-group input[type="radio"]:checked + label {
+      background: #e91e8c;
+      border-color: #e91e8c;
+      color: white;
+    }
+
+    /* ── Date input ── */
+    input[type="date"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #f8bbd0;
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #333;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+    }
+
+    input[type="date"]:focus {
+      border-color: #e91e8c;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e91e8c, #ad1457);
+      color: white;
+      box-shadow: 0 4px 16px rgba(233, 30, 140, 0.35);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(233, 30, 140, 0.45);
+    }
+
+    /* ── Error / success messages ── */
+    .error-msg {
+      background: #fce4ec;
+      color: #c62828;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .success-banner {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      display: none;
+      margin-top: 12px;
+    }
+
+    .success-banner .big-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 2px solid #fce4ec;
+      margin: 24px 0;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-state { display: none; }
+    .default-state { display: inline; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════ LOGIN SCREEN ════════════════════ -->
+<div class="card" id="login-screen">
+  <div class="login-emoji">🔒</div>
+  <h1>Dhwani's Tracker</h1>
+  <p class="subtitle">Family access only</p>
+
+  <div class="form-group">
+    <label for="password-input">Enter password to continue</label>
+    <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" />
+  </div>
+
+  <button class="btn btn-primary" onclick="checkPassword()">Unlock 🌟</button>
+  <div class="error-msg" id="pw-error">Incorrect password. Please try again.</div>
+</div>
+
+<!-- ════════════════════ APP SCREEN ════════════════════ -->
+<div class="card" id="app-screen">
+  <h1>🌟 Potty Champion Tracker</h1>
+  <p class="subtitle">Daily morning check-in for Dhwani</p>
+
+  <form id="tracker-form" onsubmit="submitForm(event)">
+
+    <!-- Date -->
+    <div class="form-group">
+      <label>📅 Date</label>
+      <input type="date" id="entry-date" required />
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Q1: Champion? -->
+    <div class="form-group">
+      <label>🏆 Was Dhwani a champion last night?</label>
+      <div class="toggle-group">
+        <input type="radio" name="champion" id="champion-yes" value="Yes" required />
+        <label for="champion-yes">Yes 🎉</label>
+        <input type="radio" name="champion" id="champion-no" value="No" />
+        <label for="champion-no">Not yet 💪</label>
+      </div>
+    </div>
+
+    <!-- Q2: Double void -->
+    <div class="form-group">
+      <label>💧 Did Dhwani double void last night?</label>
+      <div class="toggle-group">
+        <input type="radio" name="double_void" id="dv-yes" value="Yes" required />
+        <label for="dv-yes">Yes ✅</label>
+        <input type="radio" name="double_void" id="dv-no" value="No" />
+        <label for="dv-no">No ❌</label>
+      </div>
+    </div>
+
+    <!-- Q3: Water in evening -->
+    <div class="form-group">
+      <label>🥤 Did Dhwani drink a lot of water in the evening?</label>
+      <div class="toggle-group">
+        <input type="radio" name="water_evening" id="we-yes" value="Yes" required />
+        <label for="we-yes">Yes ✅</label>
+        <input type="radio" name="water_evening" id="we-no" value="No" />
+        <label for="we-no">No ❌</label>
+      </div>
+    </div>
+
+    <!-- Q4: Pee at 10pm -->
+    <div class="form-group">
+      <label>🌙 Did we take her to pee at 10pm?</label>
+      <div class="toggle-group">
+        <input type="radio" name="pee_10pm" id="p10-yes" value="Yes" required />
+        <label for="p10-yes">Yes ✅</label>
+        <input type="radio" name="pee_10pm" id="p10-no" value="No" />
+        <label for="p10-no">No ❌</label>
+      </div>
+    </div>
+
+    <!-- Q5: Woke up in night -->
+    <div class="form-group">
+      <label>🌛 Did she wake up in the middle of the night to pee?</label>
+      <div class="toggle-group">
+        <input type="radio" name="woke_night" id="wn-yes" value="Yes" required />
+        <label for="wn-yes">Yes ✅</label>
+        <input type="radio" name="woke_night" id="wn-no" value="No" />
+        <label for="wn-no">No ❌</label>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Q6: Comments -->
+    <div class="form-group">
+      <label>📝 Any other comments?</label>
+      <textarea id="comments" placeholder="Optional notes..."></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn btn-primary" type="submit" id="submit-btn">
+      <span class="default-state">Log to Google Sheets 📊</span>
+      <span class="loading-state"><span class="spinner"></span>Saving…</span>
+    </button>
+
+    <!-- Success -->
+    <div class="success-banner" id="success-banner">
+      <div class="big-emoji">🎉</div>
+      <div>Logged successfully!</div>
+      <div style="font-size:0.85rem; font-weight:400; margin-top:6px; color:#388e3c;">Check your Google Sheet to see the entry.</div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="submit-error">
+      Something went wrong. Please check your internet connection and try again.
+    </div>
+  </form>
+
+  <div style="text-align:center; margin-top:24px;">
+    <a href="#" onclick="logout()" style="color:#e91e8c; font-size:0.85rem; text-decoration:none;">🔒 Lock app</a>
+  </div>
+</div>
+
+<script>
+  // ════════════════════════════════════════════════
+  //  ⚙️  CONFIGURATION — fill these in!
+  // ════════════════════════════════════════════════
+
+  // 1. Paste your Google Apps Script Web App URL here:
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWgFsc1CzKCAXNU0QUTthMkqvExYybxfIUldlF0oGAvuzx3kZJLxFrYCdfJT_PYC5uLQ/exec";
+
+  // 2. Set a password for the app (share with your husband):
+  const APP_PASSWORD = "SweetLittleB@by";
+
+  // ════════════════════════════════════════════════
+
+  // Set today's date on load
+  window.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById("entry-date").value = today;
+
+    // Keep session alive across page refreshes
+    if (sessionStorage.getItem("authed") === "1") {
+      showApp();
+    }
+  });
+
+  function checkPassword() {
+    const val = document.getElementById("password-input").value;
+    const err = document.getElementById("pw-error");
+    if (val === APP_PASSWORD) {
+      sessionStorage.setItem("authed", "1");
+      err.style.display = "none";
+      showApp();
+    } else {
+      err.style.display = "block";
+      document.getElementById("password-input").value = "";
+      document.getElementById("password-input").focus();
+    }
+  }
+
+  // Allow pressing Enter in the password field
+  document.getElementById("password-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkPassword();
+  });
+
+  function showApp() {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app-screen").style.display  = "block";
+  }
+
+  function logout() {
+    sessionStorage.removeItem("authed");
+    document.getElementById("app-screen").style.display   = "none";
+    document.getElementById("login-screen").style.display = "block";
+    document.getElementById("password-input").value = "";
+  }
+
+  // ── Form submission ──
+  async function submitForm(e) {
+    e.preventDefault();
+
+    const btn         = document.getElementById("submit-btn");
+    const successDiv  = document.getElementById("success-banner");
+    const errorDiv    = document.getElementById("submit-error");
+
+    // Reset state
+    successDiv.style.display = "none";
+    errorDiv.style.display   = "none";
+
+    // Loading state
+    btn.disabled = true;
+    btn.querySelector(".default-state").style.display = "none";
+    btn.querySelector(".loading-state").style.display = "inline";
+
+    const payload = {
+      date:          document.getElementById("entry-date").value,
+      champion:      document.querySelector('input[name="champion"]:checked')?.value     || "",
+      double_void:   document.querySelector('input[name="double_void"]:checked')?.value  || "",
+      water_evening: document.querySelector('input[name="water_evening"]:checked')?.value || "",
+      pee_10pm:      document.querySelector('input[name="pee_10pm"]:checked')?.value     || "",
+      woke_night:    document.querySelector('input[name="woke_night"]:checked')?.value   || "",
+      comments:      document.getElementById("comments").value.trim(),
+    };
+
+    try {
+      // Using no-cors because Apps Script doesn't send CORS headers for cross-origin requests.
+      // The data is still recorded; we just can't read the response body.
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode:   "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload),
+      });
+
+      // Show success & reset form
+      successDiv.style.display = "block";
+      document.getElementById("tracker-form").reset();
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById("entry-date").value = today;
+
+    } catch (err) {
+      errorDiv.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.querySelector(".default-state").style.display = "inline";
+      btn.querySelector(".loading-state").style.display = "none";
+    }
+  }
+</script>
+
+</body>
+</html>
