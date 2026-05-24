@@ -3,45 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌟 Dhwani's Potty Champion Tracker</title>
+  <title>❄️ Dhwani's Potty Champion Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(160deg, #0b1e3d 0%, #1a3f7a 35%, #2176ae 65%, #74c0e8 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
+      position: relative;
+      overflow-x: hidden;
     }
 
+    /* ── Snowflake background ── */
+    .snowflakes {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -40px;
+      color: rgba(255,255,255,0.55);
+      font-size: 1.2rem;
+      animation: fall linear infinite;
+      user-select: none;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg);   opacity: 0.7; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── Card ── */
     .card {
-      background: white;
-      border-radius: 24px;
+      background: linear-gradient(180deg, #eaf6ff 0%, #ffffff 60%);
+      border-radius: 28px;
       padding: 32px 28px;
       width: 100%;
-      max-width: 480px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+      max-width: 490px;
+      box-shadow: 0 8px 48px rgba(3, 40, 100, 0.35), inset 0 1px 0 rgba(255,255,255,0.9);
+      border: 1px solid rgba(130, 200, 255, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Crystal decorations on the card ── */
+    .card::before {
+      content: "❄️";
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.8rem;
+      filter: drop-shadow(0 0 8px rgba(100,200,255,0.8));
     }
 
     h1 {
       text-align: center;
       font-size: 1.5rem;
-      color: #ad1457;
+      font-weight: 800;
+      color: #0d3b72;
       margin-bottom: 4px;
+      letter-spacing: -0.3px;
     }
 
     .subtitle {
       text-align: center;
-      color: #e91e8c;
+      color: #4a90c4;
       font-size: 0.9rem;
       margin-bottom: 28px;
-      opacity: 0.7;
+      font-weight: 600;
     }
 
-    /* ── Login screen ── */
+    /* ── Login / App screens ── */
     #login-screen { display: block; }
     #app-screen    { display: none; }
 
@@ -49,36 +93,41 @@
       font-size: 3.5rem;
       text-align: center;
       margin-bottom: 12px;
+      filter: drop-shadow(0 0 12px rgba(100, 200, 255, 0.7));
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+    /* ── Form groups ── */
+    .form-group { margin-bottom: 20px; }
 
     label {
       display: block;
-      font-weight: 600;
-      color: #5d4037;
+      font-weight: 700;
+      color: #0d3b72;
       margin-bottom: 8px;
       font-size: 0.95rem;
       line-height: 1.4;
     }
 
     input[type="password"],
+    input[type="time"],
     textarea {
       width: 100%;
       padding: 12px 14px;
-      border: 2px solid #f8bbd0;
+      border: 2px solid #90caf9;
       border-radius: 12px;
       font-size: 1rem;
-      color: #333;
-      transition: border-color 0.2s;
+      font-family: inherit;
+      color: #1a3a6e;
+      transition: border-color 0.2s, box-shadow 0.2s;
       outline: none;
+      background: #f5fbff;
     }
 
     input[type="password"]:focus,
+    input[type="time"]:focus,
     textarea:focus {
-      border-color: #e91e8c;
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(33, 118, 210, 0.15);
     }
 
     textarea {
@@ -87,50 +136,49 @@
     }
 
     /* ── Yes / No toggle buttons ── */
-    .toggle-group {
-      display: flex;
-      gap: 10px;
-    }
+    .toggle-group { display: flex; gap: 10px; }
 
-    .toggle-group input[type="radio"] {
-      display: none;
-    }
+    .toggle-group input[type="radio"] { display: none; }
 
     .toggle-group label {
       flex: 1;
       text-align: center;
       padding: 11px;
-      border: 2px solid #f8bbd0;
+      border: 2px solid #90caf9;
       border-radius: 12px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.95rem;
-      color: #ad1457;
+      color: #1565c0;
       transition: all 0.15s;
       user-select: none;
+      background: #f5fbff;
     }
 
     .toggle-group input[type="radio"]:checked + label {
-      background: #e91e8c;
-      border-color: #e91e8c;
+      background: linear-gradient(135deg, #42a5f5, #1565c0);
+      border-color: #1565c0;
       color: white;
+      box-shadow: 0 3px 10px rgba(21,101,192,0.3);
     }
 
     /* ── Date input ── */
     input[type="date"] {
       width: 100%;
       padding: 12px 14px;
-      border: 2px solid #f8bbd0;
+      border: 2px solid #90caf9;
       border-radius: 12px;
       font-size: 1rem;
-      color: #333;
+      font-family: inherit;
+      color: #1a3a6e;
       outline: none;
-      transition: border-color 0.2s;
-      background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #f5fbff;
     }
 
     input[type="date"]:focus {
-      border-color: #e91e8c;
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(33, 118, 210, 0.15);
     }
 
     /* ── Buttons ── */
@@ -140,46 +188,48 @@
       border: none;
       border-radius: 14px;
       font-size: 1.05rem;
-      font-weight: 700;
+      font-weight: 800;
+      font-family: inherit;
       cursor: pointer;
       transition: transform 0.1s, box-shadow 0.1s;
+      letter-spacing: 0.2px;
     }
 
-    .btn:active {
-      transform: scale(0.97);
-    }
+    .btn:active { transform: scale(0.97); }
 
     .btn-primary {
-      background: linear-gradient(135deg, #e91e8c, #ad1457);
+      background: linear-gradient(135deg, #42a5f5 0%, #1565c0 100%);
       color: white;
-      box-shadow: 0 4px 16px rgba(233, 30, 140, 0.35);
+      box-shadow: 0 4px 18px rgba(21, 101, 192, 0.4);
     }
 
     .btn-primary:hover {
-      box-shadow: 0 6px 20px rgba(233, 30, 140, 0.45);
+      box-shadow: 0 6px 22px rgba(21, 101, 192, 0.55);
     }
 
     /* ── Error / success messages ── */
     .error-msg {
-      background: #fce4ec;
-      color: #c62828;
+      background: #e3f0ff;
+      color: #b71c1c;
       border-radius: 10px;
       padding: 10px 14px;
       font-size: 0.9rem;
       margin-top: 12px;
       display: none;
+      font-weight: 600;
     }
 
     .success-banner {
-      background: #e8f5e9;
-      color: #2e7d32;
+      background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+      color: #1b5e20;
       border-radius: 14px;
       padding: 20px;
       text-align: center;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       display: none;
       margin-top: 12px;
+      border: 1px solid rgba(100,200,100,0.3);
     }
 
     .success-banner .big-emoji {
@@ -187,12 +237,14 @@
       margin-bottom: 8px;
     }
 
+    /* ── Divider ── */
     .divider {
       border: none;
-      border-top: 2px solid #fce4ec;
-      margin: 24px 0;
+      border-top: 2px solid #d6ecfa;
+      margin: 22px 0;
     }
 
+    /* ── Submit spinner ── */
     .spinner {
       display: inline-block;
       width: 18px;
@@ -209,29 +261,96 @@
 
     .loading-state { display: none; }
     .default-state { display: inline; }
+
+    /* ── Date log status badge ── */
+    #date-status {
+      display: none;
+      margin-top: 10px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      align-items: center;
+      gap: 7px;
+    }
+
+    #date-status.checking {
+      display: flex;
+      background: #e8f4fd;
+      color: #4a90c4;
+    }
+
+    #date-status.logged {
+      display: flex;
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    #date-status.not-logged {
+      display: flex;
+      background: #fff8e1;
+      color: #e65100;
+    }
+
+    #date-status .status-spinner {
+      width: 13px;
+      height: 13px;
+      border: 2px solid #90caf9;
+      border-top-color: #1976d2;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    /* ── Lock link ── */
+    .lock-link {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #4a90c4;
+      font-size: 0.85rem;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .lock-link:hover { color: #1565c0; }
   </style>
 </head>
 <body>
 
+<!-- Animated snowflakes -->
+<div class="snowflakes" aria-hidden="true">
+  <span class="snowflake" style="left:5%;  animation-duration:9s;  animation-delay:0s;   font-size:1.0rem;">❄</span>
+  <span class="snowflake" style="left:15%; animation-duration:12s; animation-delay:2s;   font-size:0.8rem;">❅</span>
+  <span class="snowflake" style="left:25%; animation-duration:8s;  animation-delay:4s;   font-size:1.3rem;">❆</span>
+  <span class="snowflake" style="left:35%; animation-duration:11s; animation-delay:1s;   font-size:0.9rem;">❄</span>
+  <span class="snowflake" style="left:45%; animation-duration:10s; animation-delay:6s;   font-size:1.1rem;">❅</span>
+  <span class="snowflake" style="left:55%; animation-duration:7s;  animation-delay:3s;   font-size:0.7rem;">❆</span>
+  <span class="snowflake" style="left:65%; animation-duration:13s; animation-delay:5s;   font-size:1.2rem;">❄</span>
+  <span class="snowflake" style="left:75%; animation-duration:9s;  animation-delay:1.5s; font-size:0.85rem;">❅</span>
+  <span class="snowflake" style="left:85%; animation-duration:11s; animation-delay:7s;   font-size:1.0rem;">❆</span>
+  <span class="snowflake" style="left:93%; animation-duration:8s;  animation-delay:3.5s; font-size:0.75rem;">❄</span>
+</div>
+
 <!-- ════════════════════ LOGIN SCREEN ════════════════════ -->
 <div class="card" id="login-screen">
-  <div class="login-emoji">🔒</div>
+  <div class="login-emoji">❄️</div>
   <h1>Dhwani's Tracker</h1>
-  <p class="subtitle">Family access only</p>
+  <p class="subtitle">Family access only ✨</p>
 
   <div class="form-group">
     <label for="password-input">Enter password to continue</label>
     <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" />
   </div>
 
-  <button class="btn btn-primary" onclick="checkPassword()">Unlock 🌟</button>
+  <button class="btn btn-primary" onclick="checkPassword()">Unlock ❄️ Let it go!</button>
   <div class="error-msg" id="pw-error">Incorrect password. Please try again.</div>
 </div>
 
 <!-- ════════════════════ APP SCREEN ════════════════════ -->
 <div class="card" id="app-screen">
-  <h1>🌟 Potty Champion Tracker</h1>
-  <p class="subtitle">Daily morning check-in for Dhwani</p>
+  <h1>❄️ Potty Champion Tracker</h1>
+  <p class="subtitle">Daily morning check-in for Dhwani ✨</p>
 
   <form id="tracker-form" onsubmit="submitForm(event)">
 
@@ -239,6 +358,10 @@
     <div class="form-group">
       <label>📅 Date</label>
       <input type="date" id="entry-date" required />
+      <div id="date-status">
+        <span class="status-spinner"></span>
+        <span id="date-status-text"></span>
+      </div>
     </div>
 
     <hr class="divider" />
@@ -298,9 +421,15 @@
       </div>
     </div>
 
+    <!-- Q6: Time of accident -->
+    <div class="form-group">
+      <label>🚨 Time of accident at night <span style="font-weight:400; color:#4a90c4;">(leave blank if none)</span></label>
+      <input type="time" id="accident-time" />
+    </div>
+
     <hr class="divider" />
 
-    <!-- Q6: Comments -->
+    <!-- Q7: Comments -->
     <div class="form-group">
       <label>📝 Any other comments?</label>
       <textarea id="comments" placeholder="Optional notes..."></textarea>
@@ -308,15 +437,15 @@
 
     <!-- Submit -->
     <button class="btn btn-primary" type="submit" id="submit-btn">
-      <span class="default-state">Log to Google Sheets 📊</span>
+      <span class="default-state">Log to Google Sheets ❄️</span>
       <span class="loading-state"><span class="spinner"></span>Saving…</span>
     </button>
 
     <!-- Success -->
     <div class="success-banner" id="success-banner">
-      <div class="big-emoji">🎉</div>
+      <div class="big-emoji">⛄</div>
       <div>Logged successfully!</div>
-      <div style="font-size:0.85rem; font-weight:400; margin-top:6px; color:#388e3c;">Check your Google Sheet to see the entry.</div>
+      <div style="font-size:0.85rem; font-weight:600; margin-top:6px; color:#388e3c;">Check your Google Sheet to see the entry.</div>
     </div>
 
     <!-- Error -->
@@ -325,9 +454,7 @@
     </div>
   </form>
 
-  <div style="text-align:center; margin-top:24px;">
-    <a href="#" onclick="logout()" style="color:#e91e8c; font-size:0.85rem; text-decoration:none;">🔒 Lock app</a>
-  </div>
+  <a href="#" class="lock-link" onclick="logout()">🔒 Lock app</a>
 </div>
 
 <script>
@@ -336,7 +463,7 @@
   // ════════════════════════════════════════════════
 
   // 1. Paste your Google Apps Script Web App URL here:
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWgFsc1CzKCAXNU0QUTthMkqvExYybxfIUldlF0oGAvuzx3kZJLxFrYCdfJT_PYC5uLQ/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuBS7qELlDQVDi0IVHPv2l8jSBBGvG0fAu4lBbrcMgOTHlFQVVbKkpfVEVYw6FmuZkYQ/exec";
 
   // 2. Set a password for the app (share with your husband):
   const APP_PASSWORD = "SweetLittleB@by";
@@ -348,11 +475,45 @@
     const today = new Date().toISOString().slice(0, 10);
     document.getElementById("entry-date").value = today;
 
+    // Check logged status whenever date changes
+    document.getElementById("entry-date").addEventListener("change", e => {
+      if (e.target.value) checkDateLogged(e.target.value);
+    });
+
     // Keep session alive across page refreshes
     if (sessionStorage.getItem("authed") === "1") {
       showApp();
     }
   });
+
+  // ── Date logged status check ──
+  async function checkDateLogged(date) {
+    const badge    = document.getElementById("date-status");
+    const badgeTxt = document.getElementById("date-status-text");
+    const spinner  = badge.querySelector(".status-spinner");
+
+    badge.className = "checking";
+    spinner.style.display = "block";
+    badgeTxt.textContent  = "Checking…";
+
+    try {
+      const res  = await fetch(`${APPS_SCRIPT_URL}?date=${date}`);
+      const data = await res.json();
+
+      if (data.logged) {
+        badge.className       = "logged";
+        spinner.style.display = "none";
+        badgeTxt.textContent  = "✅ Already logged for this date";
+      } else {
+        badge.className       = "not-logged";
+        spinner.style.display = "none";
+        badgeTxt.textContent  = "📝 Not yet logged for this date";
+      }
+    } catch (_) {
+      badge.className     = "";
+      badge.style.display = "none";
+    }
+  }
 
   function checkPassword() {
     const val = document.getElementById("password-input").value;
@@ -368,7 +529,6 @@
     }
   }
 
-  // Allow pressing Enter in the password field
   document.getElementById("password-input").addEventListener("keydown", e => {
     if (e.key === "Enter") checkPassword();
   });
@@ -376,6 +536,8 @@
   function showApp() {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app-screen").style.display  = "block";
+    const date = document.getElementById("entry-date").value;
+    if (date) checkDateLogged(date);
   }
 
   function logout() {
@@ -389,32 +551,29 @@
   async function submitForm(e) {
     e.preventDefault();
 
-    const btn         = document.getElementById("submit-btn");
-    const successDiv  = document.getElementById("success-banner");
-    const errorDiv    = document.getElementById("submit-error");
+    const btn        = document.getElementById("submit-btn");
+    const successDiv = document.getElementById("success-banner");
+    const errorDiv   = document.getElementById("submit-error");
 
-    // Reset state
     successDiv.style.display = "none";
     errorDiv.style.display   = "none";
 
-    // Loading state
     btn.disabled = true;
     btn.querySelector(".default-state").style.display = "none";
     btn.querySelector(".loading-state").style.display = "inline";
 
     const payload = {
       date:          document.getElementById("entry-date").value,
-      champion:      document.querySelector('input[name="champion"]:checked')?.value     || "",
-      double_void:   document.querySelector('input[name="double_void"]:checked')?.value  || "",
-      water_evening: document.querySelector('input[name="water_evening"]:checked')?.value || "",
-      pee_10pm:      document.querySelector('input[name="pee_10pm"]:checked')?.value     || "",
-      woke_night:    document.querySelector('input[name="woke_night"]:checked')?.value   || "",
+      champion:      document.querySelector('input[name="champion"]:checked')?.value      || "",
+      double_void:   document.querySelector('input[name="double_void"]:checked')?.value   || "",
+      water_evening: document.querySelector('input[name="water_evening"]:checked')?.value  || "",
+      pee_10pm:      document.querySelector('input[name="pee_10pm"]:checked')?.value      || "",
+      woke_night:    document.querySelector('input[name="woke_night"]:checked')?.value    || "",
+      accident_time: document.getElementById("accident-time").value                       || "",
       comments:      document.getElementById("comments").value.trim(),
     };
 
     try {
-      // Using no-cors because Apps Script doesn't send CORS headers for cross-origin requests.
-      // The data is still recorded; we just can't read the response body.
       await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         mode:   "no-cors",
@@ -422,11 +581,16 @@
         body:    JSON.stringify(payload),
       });
 
-      // Show success & reset form
       successDiv.style.display = "block";
       document.getElementById("tracker-form").reset();
       const today = new Date().toISOString().slice(0, 10);
       document.getElementById("entry-date").value = today;
+
+      const badge    = document.getElementById("date-status");
+      const badgeTxt = document.getElementById("date-status-text");
+      badge.querySelector(".status-spinner").style.display = "none";
+      badge.className      = "logged";
+      badgeTxt.textContent = "✅ Already logged for this date";
 
     } catch (err) {
       errorDiv.style.display = "block";
